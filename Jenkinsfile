@@ -5,6 +5,10 @@ pipeline {
         }
     }
 
+    environment {
+       DOCKER_CODE = credentials('DOCKER_CODE')
+    }
+    
     stages {
         stage("Application Build"){
             steps{
@@ -22,6 +26,19 @@ pipeline {
                 sh """
                 cd puddle-web
                 python manage.py test
+                """
+            }
+        }
+        stage("Application Packaging"){
+            steps{
+                echo "Packaging Stage"
+                sh """
+                    cd puddle-web
+                    docker build -t puddle-webapp:latest . 
+                    docker login -u babithg -p${DOCKER_CODE}
+                    docker tag puddle-webapp:latest babithg/puddle-webapp:latest
+                    docker push babithg/puddle-webapp:latest
+                    docker logout
                 """
             }
         }
