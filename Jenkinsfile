@@ -10,7 +10,8 @@ pipeline {
             steps{
                 echo "Build Stage ${BUILD_ID}"
                 sh """
-                   cd puddle
+                   git clone https://github.com/babithg/puddle-web.git
+                   cd puddle-web
                    pip install -r requirements.txt
                 """
             }
@@ -19,7 +20,8 @@ pipeline {
             steps{
                 echo "Test Stage"
                 sh """
-                echo "Test steps here !!!"
+                cd puddle-web
+                python manage.py test
                 """
             }
         }
