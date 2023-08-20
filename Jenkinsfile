@@ -48,7 +48,7 @@ pipeline {
                     docker.withRegistry('https://index.docker.io/v2/', DOCKER_HUB_CREDENTIALS) {
                         def customImage = docker.build(IMAGE_NAME, "-f ${DOCKERFILE_PATH} .")
                         customImage.push()
-
+                    }
                 }
             }
         }
