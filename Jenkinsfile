@@ -1,14 +1,14 @@
 pipeline {
     agent {
         node {
-            label 'docker-agent'
+            label 'docker-agent-python'
         }
     }
 
     stages {
         stage("Application Build"){
             steps{
-                echo "Build Stage"
+                echo "Build Stage ${BUILD_ID}"
                 sh """
                    cd puddle
                    pip install -r requirements.txt
