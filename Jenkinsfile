@@ -10,7 +10,8 @@ pipeline {
             steps{
                 echo "Build Stage"
                 sh """
-                    echo "Build activity steps !!!"
+                   cd puddle
+                   pip install -r requirements.txt
                 """
             }
         }
