@@ -6,7 +6,11 @@ pipeline {
     }
 
     environment {
-       DOCKER_CODE = credentials('DOCKER_CODE')
+        // DOCKER_USERNAME = credentials('docker-username-credentials-id')
+        // DOCKER_PASSWORD = credentials('DOCKER_CODE')
+        DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials')
+        IMAGE_NAME = 'babithg/paddle-webapp:latest'
+        DOCKERFILE_PATH = 'puddle-web/Dockerfile'
     }
     
     stages {
@@ -32,14 +36,20 @@ pipeline {
         stage("Application Packaging"){
             steps{
                 echo "Packaging Stage"
-                sh """
-                    cd puddle-web
-                    docker build -t puddle-webapp:latest . 
-                    docker login -u babithg -p${DOCKER_CODE}
-                    docker tag puddle-webapp:latest babithg/puddle-webapp:latest
-                    docker push babithg/puddle-webapp:latest
-                    docker logout
-                """
+                // sh """
+                //     cd puddle-web
+                //     docker build -t puddle-webapp:latest . 
+                //     docker login -u babithg -p${DOCKER_CODE}
+                //     docker tag puddle-webapp:latest babithg/puddle-webapp:latest
+                //     docker push babithg/puddle-webapp:latest
+                //     docker logout
+                // """
+                script{
+                    docker.withRegistry('https://index.docker.io/v2/', DOCKER_HUB_CREDENTIALS) {
+                        def customImage = docker.build(IMAGE_NAME, "-f ${DOCKERFILE_PATH} .")
+                        customImage.push()
+
+                }
             }
         }
         stage('Application Deliver'){
