@@ -9,7 +9,7 @@ RUN chown -R webapp: /srv /home/webapp
 USER webapp
 RUN git clone https://github.com/babithg/puddle-web.git /srv
 
-WORKDIR /srv/puddle-web
+WORKDIR /srv
 RUN pip install -r requirements.txt
 
 CMD ["/usr/bin/python3", "manage.py", "run", "0.0.0.0:80"]
