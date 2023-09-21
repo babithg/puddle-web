@@ -9,8 +9,8 @@ pipeline {
         // DOCKER_USERNAME = credentials('docker-username-credentials-id')
         // DOCKER_PASSWORD = credentials('DOCKER_CODE')
         DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials')
-        IMAGE_NAME = 'babithg/paddle-webapp:latest'
-        DOCKERFILE_PATH = 'puddle-web/Dockerfile'
+        DOCKER_IMAGE_NAME = 'babithg/paddle-webapp:latest'
+        DOCKERFILE_PATH = '/srv'
     }
     
     stages {
@@ -45,8 +45,17 @@ pipeline {
                 //     docker logout
                 // """
                 script{
-                    docker.withRegistry('https://index.docker.io/v2/', DOCKER_HUB_CREDENTIALS) {
-                        def customImage = docker.build(IMAGE_NAME, "-f ${DOCKERFILE_PATH} .")
+                    // docker.withRegistry('https://index.docker.io/v2/', DOCKER_HUB_CREDENTIALS) {
+                    //     def customImage = docker.build(IMAGE_NAME, "-f ${DOCKERFILE_PATH} .")
+                    //     customImage.push()
+                    // }
+                    def customImage = docker.build(DOCKER_IMAGE_NAME, "-f ${DOCKERFILE_PATH} .")
+
+                    // Optionally, you can tag the image with a custom tag
+                    customImage.tag('latest')
+
+                    // Push the image to Docker Hub
+                    docker.withRegistry('https://registry.hub.docker.com', DOCKER_HUB_CREDENTIALS) {
                         customImage.push()
                     }
                 }
